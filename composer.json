@@ -1,0 +1,31 @@
+{
+    "name": "mglaess/smallcms",
+    "description": "A new PHP project following PSR standards.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "H.-M.Glaess",
+            "email": "hmglaess@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "nikic/fast-route": "^1.3",
+        "php-di/php-di": "^7.1"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/phpstan": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "scripts": {
+        "lint": "php-cs-fixer fix app --rules=@PSR12",
+        "lint:check": "php-cs-fixer fix app --rules=@PSR12 --dry-run",
+        "analyse": "phpstan analyse"
+    }
+}

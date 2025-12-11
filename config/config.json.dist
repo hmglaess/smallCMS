@@ -1,0 +1,12 @@
+{
+    "db": {
+        "host": "localhost",
+        "name": "smallcms",
+        "user": "root",
+        "pass": ""
+    },
+    "app": {
+        "name": "smallCMS",
+        "env": "development"
+    }
+}
