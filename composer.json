@@ -9,10 +9,20 @@
             "email": "hmglaess@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../htmxphp",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
     "require": {
         "php": ">=8.1",
         "nikic/fast-route": "^1.3",
-        "php-di/php-di": "^7.1"
+        "php-di/php-di": "^7.1",
+        "makalin/htmxphp": "^2.0."
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -20,7 +30,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "HTMX\\": "src/HTMX/"
         }
     },
     "scripts": {

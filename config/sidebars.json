@@ -1,0 +1,22 @@
+{
+    "sidebarLeft": [
+        {
+            "title": "🎵 Nächste Events",
+            "content": "<p>10. Januar 2026<br>Queens 45 BC<\/p><div class=\"image-container\">\n<img id=\"myImage\" src=\"\/assets\/img\/Catharina_DiscoFoxSpecialParty_4_50.png\" alt=\"Klick mich zum Vergrößern\">\n<\/div>"
+        },
+        {
+            "title": "📍 Locations",
+            "content": "<p>Unsere Tanzkurse finden an verschiedenen Orten in Berlin statt.<\/p>"
+        }
+    ],
+    "sidebarRight": [
+        {
+            "title": "📞 Kontakt",
+            "content": "<p><strong>Tel:<\/strong><br><strong>Mail:<\/strong><br>info@discofoxberlin.de<\/p>"
+        },
+        {
+            "title": "💬 Social Media",
+            "content": "<p><a href=\"https:\/\/www.facebook.com\/groups\/3810307689295251\/\">Facebook<\/a><\/p>"
+        }
+    ]
+}

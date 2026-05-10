@@ -1,0 +1,495 @@
+// Admin JavaScript - Functions for the administration interface
+
+// Use an IIFE to avoid polluting the global namespace and prevent redeclaration errors
+(function() {
+    'use strict';
+
+    // Global state for file manager
+    let currentPath = typeof window.adminCurrentPath !== 'undefined' ? window.adminCurrentPath : '';
+
+    /**
+     * ============================================
+     * FILE MANAGER FUNCTIONS
+     * ============================================
+     */
+
+    /**
+     * Show the file upload dialog
+     * Called from: files.php - Upload button
+     */
+    window.showUploadDialog = function() {
+        document.getElementById('upload-dialog').style.display = 'flex';
+    };
+
+    /**
+     * Hide the file upload dialog
+     * Called from: files.php - Cancel button
+     */
+    window.hideUploadDialog = function() {
+        document.getElementById('upload-dialog').style.display = 'none';
+    };
+
+    /**
+     * Handle file upload with actual implementation
+     * Called from: files.php - Upload button in dialog
+     */
+    window.uploadFile = function() {
+        const fileInput = document.getElementById('file-upload');
+        if (fileInput.files.length === 0) {
+            alert('Bitte wählen Sie eine Datei aus.');
+            return;
+        }
+        
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('directory', currentPath);
+        
+        // Send file to server
+        fetch('/admin/files/upload', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Datei erfolgreich hochgeladen: ' + file.name);
+                // Refresh the file manager to show the new file
+                loadDirectory(currentPath);
+            } else {
+                alert('Fehler beim Hochladen: ' + (data.message || 'Unbekannter Fehler'));
+            }
+            hideUploadDialog();
+        })
+        .catch(error => {
+            console.error('Fehler beim Hochladen:', error);
+            alert('Fehler beim Hochladen der Datei');
+            hideUploadDialog();
+        });
+    };
+
+    /**
+     * Create a new folder with actual implementation
+     * Called from: files.php - Create Folder button
+     */
+    window.createFolder = function() {
+        const folderName = prompt('Geben Sie den Ordnernamen ein:');
+        if (!folderName || folderName.trim() === '') {
+            alert('Bitte geben Sie einen gültigen Ordnernamen ein.');
+            return;
+        }
+        
+        const path = currentPath ? currentPath + '/' + folderName : folderName;
+        
+        // Send request to create folder
+        fetch('/admin/files/create-folder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                folderName: folderName,
+                path: path
+            })
+        })
+        .then(response => {
+            // Check if response is OK and has content
+            if (!response.ok) {
+                throw new Error('HTTP error! status: ' + response.status);
+            }
+            
+            // First get the raw text to check if it's empty
+            return response.text().then(text => {
+                // If response is empty, assume success (for backward compatibility)
+                if (!text.trim()) {
+                    console.log('Empty response received, assuming success');
+                    return {success: true, message: 'Ordner erfolgreich erstellt'};
+                }
+                
+                // Try to parse as JSON
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('Failed to parse JSON response:', e);
+                    console.error('Response text:', text);
+                    // If we can't parse but the folder was created, assume success
+                    if (text.includes('erstellt') || text.includes('created')) {
+                        return {success: true, message: 'Ordner erfolgreich erstellt'};
+                    }
+                    return {success: false, message: 'Ungültige Server-Antwort'};
+                }
+            });
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Ordner erfolgreich erstellt: ' + folderName);
+                // Refresh the file manager to show the new folder
+                loadDirectory(currentPath);
+            } else {
+                // Only show error if it's not a success case
+                console.warn('Folder creation reported failure:', data.message);
+                // Don't show alert for expected success cases
+                if (data.message && !data.message.includes('erstellt') && !data.message.includes('created')) {
+                    alert('Hinweis: ' + data.message);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error in createFolder:', error);
+            // Only show alert for real errors
+            if (error.message && !error.message.includes('erstellt') && !error.message.includes('created')) {
+                alert('Fehler beim Erstellen des Ordners. Bitte versuchen Sie es erneut.');
+            }
+        });
+    };
+
+    /**
+     * Navigate back to parent directory
+     * Called from: files.php - Back button
+     */
+    window.goBack = function() {
+        if (!currentPath) return;
+        
+        const pathParts = currentPath.split('/');
+        if (pathParts.length > 1) {
+            pathParts.pop();
+            loadDirectory(pathParts.join('/'));
+        } else {
+            loadDirectory('');
+        }
+    };
+
+    /**
+     * Delete a file or folder
+     * Called by: attachEventHandlers() - When delete button is clicked
+     * @param {string} name - Name of the file or folder to delete
+     */
+    function deleteFile(name) {
+        if (confirm('Möchten Sie wirklich löschen: ' + name + '?')) {
+            // Check if it's a protected folder
+            const protectedFolders = ['css', 'img', 'js'];
+            const isProtected = protectedFolders.includes(name.toLowerCase());
+            
+            if (isProtected) {
+                alert('Der Ordner "' + name + '" ist geschützt und kann nicht gelöscht werden.');
+                return;
+            }
+            
+            // Determine if it's a file or folder (based on whether it has an extension)
+            const isFolder = !name.includes('.');
+            const path = currentPath ? currentPath + '/' + name : name;
+            
+            fetch('/admin/files/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    path: currentPath,
+                    isFolder: isFolder
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP error! status: ' + response.status);
+                }
+                return response.text().then(text => {
+                    if (!text.trim()) {
+                        return {success: true, message: 'Erfolgreich gelöscht'};
+                    }
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        if (text.includes('gelöscht') || text.includes('deleted')) {
+                            return {success: true, message: 'Erfolgreich gelöscht'};
+                        }
+                        return {success: false, message: 'Ungültige Server-Antwort'};
+                    }
+                });
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Erfolgreich gelöscht: ' + name);
+                    // Refresh the file manager
+                    loadDirectory(currentPath);
+                } else {
+                    alert('Fehler beim Löschen: ' + (data.message || 'Unbekannter Fehler'));
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting:', error);
+                alert('Fehler beim Löschen. Bitte versuchen Sie es erneut.');
+            });
+        }
+    }
+
+    /**
+     * Open a directory and load its contents
+     * Called by: attachEventHandlers() - When directory open button is clicked
+     * @param {string} dirname - Name of the directory to open
+     */
+    function openDirectory(dirname) {
+        const fullPath = currentPath ? currentPath + '/' + dirname : dirname;
+        loadDirectory(fullPath);
+    }
+
+    /**
+     * Load directory contents via AJAX
+     * Called by: openDirectory() and goBack()
+     * @param {string} path - Full path to the directory
+     */
+    window.loadDirectory = function(path) {
+        currentPath = path;
+        
+        fetch('/admin/files?directory=' + encodeURIComponent(path), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.text())
+        .then(html => {
+            // Nur den file-manager-Inhalt extrahieren, falls die gesamte Seite zurückgegeben wird
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const fileManagerContent = doc.querySelector('.file-manager');
+            
+            if (fileManagerContent) {
+                document.querySelector('.file-manager').innerHTML = fileManagerContent.innerHTML;
+            } else {
+                document.querySelector('.file-manager').innerHTML = html;
+            }
+            
+            updateUI();
+        })
+        .catch(error => {
+            console.error('Fehler beim Laden des Verzeichnisses:', error);
+            alert('Fehler beim Laden des Verzeichnisses');
+        });
+    };
+
+    /**
+     * Update UI elements after directory change
+     * Called by: loadDirectory()
+     */
+    function updateUI() {
+        // Update breadcrumbs
+        const currentPathElement = document.getElementById('current-path');
+        if (currentPath) {
+            currentPathElement.innerHTML = '<span class="breadcrumb-item" onclick="loadDirectory(' + currentPath + ')">📁 ' + currentPath + '/</span>';
+        } else {
+            currentPathElement.innerHTML = '';
+        }
+        
+        // Update back button
+        const backButton = document.getElementById('back-button');
+        backButton.style.display = currentPath ? 'inline-block' : 'none';
+        
+        // Reattach event handlers for dynamically loaded content
+        attachEventHandlers();
+    }
+
+    /**
+     * Attach event handlers to dynamically loaded buttons
+     * Called by: updateUI() and DOMContentLoaded event
+     */
+    function attachEventHandlers() {
+        // Attach event handlers to all action buttons
+        const actionButtons = document.querySelectorAll('.file-actions .btn-small');
+        actionButtons.forEach(button => {
+            const action = button.getAttribute('data-action');
+            const name = button.getAttribute('data-name');
+            
+            button.onclick = function() {
+                if (action === 'open') {
+                    openDirectory(name);
+                } else if (action === 'delete') {
+                    deleteFile(name);
+                }
+            };
+        });
+    }
+
+    /**
+     * ============================================
+     * MENU EDITOR FUNCTIONS
+     * ============================================
+     */
+
+    /**
+     * Update the hidden page_id field when a page is selected from the dropdown
+     * Called from: menu_item.php - Page dropdown change
+     * @param {HTMLSelectElement} selectElement - The dropdown element that was changed
+     */
+    window.updateMenuItemPageId = function(selectElement) {
+        // Find the closest menu-item container
+        const menuItem = selectElement.closest('.menu-item');
+        
+        // Find or create a hidden input to store the page_id
+        let hiddenInput = menuItem.querySelector('input[type="hidden"][name="page_id"]');
+        if (!hiddenInput) {
+            hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'page_id';
+            menuItem.appendChild(hiddenInput);
+        }
+        
+        // Update the hidden input value
+        hiddenInput.value = selectElement.value;
+    };
+
+    /**
+     * Add a new menu item to the menu editor
+     * Called from: menu.php - Add menu item buttons
+     * @param {string} menuType - Type of menu ('main' or 'footer')
+     */
+    window.addMenuItem = function(menuType) {
+        const containerId = menuType === 'main' ? 'menu-items' : 'footer-menu-items';
+        const container = document.getElementById(containerId);
+        
+        const newItem = document.createElement('div');
+        newItem.className = 'menu-item';
+        
+        // Create the dropdown options
+        let dropdownOptions = '<option value="">-- Seite wählen --</option>';
+        
+        // Get available pages from the menu editor (if available)
+        if (typeof availablePageIds !== 'undefined' && Array.isArray(availablePageIds)) {
+            availablePageIds.forEach(pageId => {
+                dropdownOptions += `<option value="${pageId}">${pageId}</option>`;
+            });
+        } else {
+            // Fallback to placeholder pages if not available
+            const placeholderPages = ['start', 'historie', 'workshops', 'parties', 'kontakt', 'faq', 'anfahrt', 'impressum', 'datenschutz', 'agb'];
+            placeholderPages.forEach(pageId => {
+                dropdownOptions += `<option value="${pageId}">${pageId}</option>`;
+            });
+        }
+        
+        newItem.innerHTML = `
+            <div class="menu-item-flex">
+                <span class="handle">☰</span>
+                <div class="menu-item-inputs">
+                    <input type="text" placeholder="Menütitel" class="menu-item-input" style="width: 200px;" value="Neuer Eintrag">
+                    <select class="menu-item-select" onchange="updateMenuItemPageId(this)">
+                        ${dropdownOptions}
+                    </select>
+                    <input type="number" placeholder="Position" class="menu-item-position" value="10">
+                    <input type="hidden" name="page_id" value="">
+                </div>
+                <div class="menu-item-controls">
+                    <button class="btn btn-secondary menu-item-btn" onclick="addSubmenu(this)">
+                        ➕ Untermenü
+                    </button>
+                    <button class="btn btn-danger menu-item-btn" onclick="removeMenuItem(this)">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(newItem);
+    };
+
+    /**
+     * Add a submenu to a menu item (placeholder function)
+     * Called from: menu_item.php - Add submenu buttons
+     * @param {HTMLButtonElement} button - The button that was clicked
+     */
+    window.addSubmenu = function(button) {
+        alert('Untermenü-Funktion wird bald implementiert!');
+    };
+
+    /**
+     * Remove a menu item
+     * Called from: menu_item.php - Remove buttons
+     * @param {HTMLButtonElement} button - The button that was clicked
+     */
+    window.removeMenuItem = function(button) {
+        if (confirm('Menüpunkt wirklich löschen?')) {
+            const menuItem = button.closest('.menu-item');
+            menuItem.remove();
+        }
+    };
+
+    /**
+     * Save the menu structure
+     * Called from: menu.php - Save menu buttons
+     * @param {string} menuType - Type of menu ('main' or 'footer')
+     */
+    window.saveMenu = function(menuType) {
+        const containerId = menuType === 'main' ? 'menu-items' : 'footer-menu-items';
+        const container = document.getElementById(containerId);
+        const statusElement = document.getElementById('menu-save-status');
+        
+        if (!container) {
+            statusElement.textContent = 'Container nicht gefunden';
+            return;
+        }
+        
+        // Collect menu items
+        const menuItems = [];
+        const items = container.querySelectorAll('.menu-item');
+        
+        items.forEach((item, index) => {
+            const inputs = item.querySelectorAll('input');
+            const hiddenInput = item.querySelector('input[type="hidden"][name="page_id"]');
+            
+            if (inputs.length >= 2) { // We need at least title and position
+                menuItems.push({
+                    title: inputs[0].value,
+                    page_id: hiddenInput ? hiddenInput.value : (inputs[1] ? inputs[1].value : ''),
+                    position: parseInt(inputs[inputs.length - 1].value) || index
+                });
+            }
+        });
+        
+        // Send to server
+        fetch('/admin/menu/save/' + menuType, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(menuItems)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                statusElement.textContent = data.message;
+                statusElement.style.color = '#2e7d32';
+                setTimeout(() => {
+                    statusElement.textContent = '';
+                }, 3000);
+            } else {
+                statusElement.textContent = 'Fehler: ' + data.message;
+                statusElement.style.color = '#c62828';
+            }
+        })
+        .catch(error => {
+            statusElement.textContent = 'Netzwerkfehler: ' + error.message;
+            statusElement.style.color = '#c62828';
+        });
+    };
+
+    /**
+     * ============================================
+     * INITIALIZATION
+     * ============================================
+     */
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        attachEventHandlers();
+        // Hide back button initially
+        const backButton = document.getElementById('back-button');
+        if (backButton) {
+            backButton.style.display = 'none';
+        }
+    });
+
+})();

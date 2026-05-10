@@ -1,0 +1,8 @@
+{
+  "id": "parties",
+  "title": "Parties in Berlin",
+  "content": "<h2>Parties in Berlin</h2>\n<div style=\"display: table;\">\n<div style=\"display: table-row;\">\n<div style=\"display: table-cell;\">\n<figure><img src=\"../assets/img/Catharina_DiscoFoxSpecialParty_4_50.png\" alt=\"Discofoxparty am 10. Mai 2025, 19:00 Uhr, im ATRIUM44\" width=\"1080\" height=\"1080\">\n<figcaption>Discofox-Party am 10. Mai 2025, im ATRIUM44</figcaption>\n</figure>\n</div>\n</div>\n<h3 style=\"text-align: center;\"><a style=\"color: red; font-size: 2em;\" href=\"https://tickettune.com/berlindanceevent/veranstaltungen/\" target=\"_blank\" rel=\"noopener\"><strong>!!Karten hier!!</strong></a></h3>\n</div>",
+  "contentType": "html",
+  "createdAt": "2025-12-26T19:00:00+01:00",
+  "updatedAt": "2025-12-26T19:00:00+01:00"
+}

@@ -1,0 +1,88 @@
+{
+  "main_menu": {
+    "structure": [
+      {
+        "id": "start",
+        "title": "Home",
+        "position": 10,
+        "visible": true,
+        "submenu": []
+      },
+      {
+        "id": "historie",
+        "title": "Historie",
+        "position": 20,
+        "visible": true,
+        "submenu": []
+      },
+      {
+        "id": "workshops",
+        "title": "Workshops",
+        "position": 30,
+        "visible": true,
+        "submenu": [
+          {
+            "id": "workshops-anfaenger",
+            "title": "Anfänger",
+            "position": 10,
+            "visible": true
+          },
+          {
+            "id": "workshops-fortgeschrittene",
+            "title": "Fortgeschrittene",
+            "position": 20,
+            "visible": true
+          }
+        ]
+      },
+      {
+        "id": "parties",
+        "title": "Parties",
+        "position": 40,
+        "visible": true,
+        "submenu": [
+          {
+            "id": "parties-berlin",
+            "title": "Berlin",
+            "position": 10,
+            "visible": true
+          },
+          {
+            "id": "parties-auswaerts",
+            "title": "Auswärts",
+            "position": 20,
+            "visible": true
+          }
+        ]
+      },
+      {
+        "id": "kontakt",
+        "title": "Kontakt",
+        "position": 50,
+        "visible": true,
+        "submenu": []
+      }
+    ],
+    "settings": {
+      "show_hidden_pages": false,
+      "max_depth": 2,
+      "sort_by_position": true
+    }
+  },
+  "footer_menu": {
+    "structure": [
+      {
+        "id": "impressum",
+        "title": "Impressum",
+        "position": 10,
+        "visible": true
+      },
+      {
+        "id": "datenschutz",
+        "title": "Datenschutz",
+        "position": 20,
+        "visible": true
+      }
+    ]
+  }
+}

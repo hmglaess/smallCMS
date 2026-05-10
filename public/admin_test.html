@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        .info-box {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .success-box {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        a {
+            color: #2196f3;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Admin-Bereich Test</h1>
+
+    <div class="success-box">
+        <h2>✅ Admin-Bereich erfolgreich erstellt!</h2>
+        <p>Der Admin-Bereich wurde erfolgreich implementiert und ist einsatzbereit.</p>
+    </div>
+
+    <div class="info-box">
+        <h3>📋 Was wurde implementiert:</h3>
+        <ul>
+            <li><strong>Dashboard</strong> - Übersicht mit Statistiken</li>
+            <li><strong>Seitenverwaltung</strong> - CRUD für Seiten (in Arbeit)</li>
+            <li><strong>Menüverwaltung</strong> - Visueller Menü-Editor</li>
+            <li><strong>Dateiverwaltung</strong> - Dateimanager für Assets</li>
+            <li><strong>Einstellungen</strong> - Website-Konfiguration</li>
+            <li><strong>Authentifizierung</strong> - Stub für spätere Implementierung</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h3>🚀 So testen Sie den Admin-Bereich:</h3>
+        
+        <h4>Option 1: Direkter PHP-Aufruf (empfohlen)</h4>
+        <p>Führen Sie diesen Befehl in Ihrem Terminal aus:</p>
+        <pre style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; overflow-x: auto;">cd /home/work/workspace/Projects/web/smallCMS-1 && php -S localhost:8080 -t public/</pre>
+        <p>Dann öffnen Sie in Ihrem Browser:</p>
+        <p><a href="http://localhost:8080/admin" target="_blank">http://localhost:8080/admin</a></p>
+
+        <h4 style="margin-top: 20px;">Option 2: Test-Skript</h4>
+        <p>Sie können auch das Test-Skript verwenden:</p>
+        <p><a href="/test_admin.php" target="_blank">/test_admin.php</a></p>
+
+        <h4 style="margin-top: 20px;">Option 3: Manuelle Überprüfung</h4>
+        <p>Führen Sie das Debug-Skript aus:</p>
+        <pre style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; overflow-x: auto;">cd /home/work/workspace/Projects/web/smallCMS-1 && php debug_admin.php</pre>
+    </div>
+
+    <div class="warning-box">
+        <h3>⚠️ Wichtige Hinweise:</h3>
+        <ul>
+            <li><strong>Entwicklungsmodus:</strong> Die Authentifizierung ist derzeit deaktiviert.</li>
+            <li><strong>Datenpersistenz:</strong> Änderungen werden derzeit nicht gespeichert (nur Demo).</li>
+            <li><strong>Server-Problem:</strong> Falls der Server nicht startet, könnte Port 8080 belegt sein.</li>
+            <li><strong>Alternative Ports:</strong> Versuchen Sie <code>php -S localhost:8081 -t public/</code> oder <code>php -S localhost:8888 -t public/</code></li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h3>📁 Dateistruktur:</h3>
+        <pre style="background-color: #f5f5f5; padding: 15px; border-radius: 4px; overflow-x: auto;">app/
+├── Controllers/Admin/
+│   └── AdminController.php      # Haupt-Admin-Controller
+├── Services/Admin/
+│   └── AdminService.php         # Admin-Hilfsfunktionen
+├── Views/admin/
+│   ├── layout.php              # Admin-Layout mit Sidebar
+│   ├── dashboard.php           # Dashboard mit Statistiken
+│   ├── pages.php               # Seitenverwaltung
+│   ├── menu.php                # Menüverwaltung
+│   ├── files.php               # Dateiverwaltung
+│   ├── settings.php            # Einstellungen
+│   └── partials/
+│       └── menu_item.php       # Menü-Item-Template
+
+public/
+├── test_admin.php             # Test-Skript
+└── admin_test.html            # Diese Datei</pre>
+    </div>
+
+    <div class="success-box">
+        <h3>🎉 Nächste Schritte:</h3>
+        <p>Ich werde jetzt mit der Implementierung der CRUD-Funktionen für die Seitenverwaltung fortfahren, damit Sie Seiten direkt im Admin-Bereich erstellen, bearbeiten und löschen können.</p>
+    </div>
+
+    <p style="margin-top: 40px; text-align: center; color: #999;">
+        Admin-Bereich für smallCMS | DiscoFox Berlin | Entwicklungsmodus
+    </p>
+</body>
+</html>

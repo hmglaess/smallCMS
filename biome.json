@@ -1,0 +1,121 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.7.3/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "formatter": {
+    "enabled": true,
+    "indent": 4,
+    "lineWidth": 120
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "correctness": {
+        "noUnusedVariables": "error",
+        "noUnusedPrivateClassMembers": "error",
+        "noUnusedLabels": "error",
+        "noUnusedParameters": "error",
+        "noUnusedPatterns": "error",
+        "noUnusedTemplateLiterals": "error",
+        "noUnusedImports": "error",
+        "noUnusedExports": "error",
+        "noUnusedFunctions": "off" // Disable unused function warnings for dynamic calls
+      },
+      "suspicious": {
+        "noConsole": "off",
+        "noDebugger": "error",
+        "noAlert": "off",
+        "noEmptyInterface": "error",
+        "noExplicitAny": "off",
+        "noExtraBooleanCast": "error",
+        "noFloatingPromises": "error",
+        "noForEach": "off",
+        "noImplicitAny": "off",
+        "noImplicitReturns": "error",
+        "noImplicitUseStrict": "error",
+        "noImpliedEval": "error",
+        "noInvalidThis": "error",
+        "noLoneBlocks": "error",
+        "noMisleadingCharacterClass": "error",
+        "noNonNullAssertion": "off",
+        "noOctalEscape": "error",
+        "noParameterAssign": "error",
+        "noPrototypeBuiltins": "error",
+        "noRestrictedGlobals": "error",
+        "noRestrictedImports": "error",
+        "noRestrictedSyntax": "error",
+        "noReturnAssign": "error",
+        "noSelfAssign": "error",
+        "noSelfCompare": "error",
+        "noSparseArrays": "error",
+        "noTemplateCurlyInString": "error",
+        "noThisInStatic": "error",
+        "noThrowLiteral": "error",
+        "noUnmodifiedLoopCondition": "error",
+        "noUnsafeFinally": "error",
+        "noUnsafeNegation": "error",
+        "noUnusedExpressions": "error",
+        "noUseBeforeDefine": "error",
+        "noUselessBackreference": "error",
+        "noVar": "error",
+        "noVoid": "error",
+        "preferNamespaceKeyword": "error",
+        "useIsNaN": "error",
+        "validTypeOf": "error"
+      },
+      "style": {
+        "noTabs": "error",
+        "useArrowFunction": "error",
+        "useConst": "error",
+        "useTemplate": "error",
+        "useTopLevelAwait": "error"
+      },
+      "complexity": {
+        "noBitwise": "error",
+        "noLoneBlocks": "error",
+        "noNestedTernary": "error",
+        "noUnneededTernary": "error"
+      },
+      "imports": {
+        "noUnusedImports": "error",
+        "noNodejsModules": "error",
+        "noDefaultExport": "off",
+        "noNamespaceImport": "off",
+        "noWildcardImport": "off",
+        "noRelativeParentImports": "off",
+        "noAbsolutePathImports": "error",
+        "noDynamicImport": "off",
+        "noImportAssign": "error",
+        "noAnonymousDefaultExport": "error",
+        "noNamedDefaultExport": "error",
+        "noExportAssign": "error",
+        "noMutableExports": "error",
+        "noCommonjs": "off",
+        "noAmd": "error",
+        "noUmd": "error"
+      },
+      "javascript": {
+        "noUnusedFunctions": "off" // Disable unused function warnings for JavaScript files
+      }
+    }
+  },
+  "files": {
+    "ignore": [
+      "**/node_modules",
+      "**/dist",
+      "**/build",
+      "**/coverage",
+      "**/.git",
+      "**/.vscode",
+      "**/.idea"
+    ]
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semi": true,
+      "arrowParens": "always"
+    }
+  }
+}

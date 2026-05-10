@@ -1,0 +1,8 @@
+{
+  "id": "workshops",
+  "title": "Discofox - Workshops in Berlin",
+  "content": "<h4>Discofox - Workshops in Berlin</h4>\n<h5 style=\"text-align: center;\">aktuell</h5>\n<div style=\"float: left; display: table-column;\">\n<figure style=\"text-align: center;\"><img title=\"Bild vom Flyer mit Informationen\" src=\"../assets/img/Catharina_DiscoFoxSpecialParty_4_50.png\" alt=\"Bild vom Flyer mit Informationen Seite 1\" width=\"460\" height=\"895\"></figure>\n</div>\n<h1 style=\"text-align: center;\"><a style=\"color: red; font-size: 2em;\" title=\"Ticketshop\" href=\"https://tickettune.com/berlindanceevent/veranstaltungen/\" target=\"_blank\" rel=\"noopener\"><strong>!!Anmeldung hier!!</strong></a></h1>",
+  "contentType": "html",
+  "createdAt": "2025-12-26T19:00:00+01:00",
+  "updatedAt": "2025-12-26T19:00:00+01:00"
+}

@@ -1,0 +1,106 @@
+{
+    "main_menu": {
+        "structure": [
+            {
+                "id": "start",
+                "title": "Home",
+                "position": 10,
+                "visible": true,
+                "submenu": []
+            },
+            {
+                "id": "historie",
+                "title": "Historie",
+                "position": 20,
+                "visible": true,
+                "submenu": []
+            },
+            {
+                "id": "workshops",
+                "title": "Workshops",
+                "position": 30,
+                "visible": true,
+                "submenu": []
+            },
+            {
+                "id": "parties",
+                "title": "Parties",
+                "position": 40,
+                "visible": true,
+                "submenu": []
+            }
+        ],
+        "settings": {
+            "show_hidden_pages": false,
+            "max_depth": 2,
+            "sort_by_position": true
+        }
+    },
+    "footer_menu": {
+        "structure": [
+            {
+                "id": "service-header",
+                "title": "Service",
+                "position": 10,
+                "visible": true,
+                "is_header": true,
+                "submenu": []
+            },
+            {
+                "id": "kontakt",
+                "title": "Kontakt",
+                "position": 20,
+                "visible": true,
+                "submenu": []
+            },
+            {
+                "id": "faq",
+                "title": "FAQ",
+                "position": 30,
+                "visible": true,
+                "submenu": []
+            },
+            {
+                "id": "anfahrt",
+                "title": "Anfahrt",
+                "position": 40,
+                "visible": true,
+                "submenu": []
+            },
+            {
+                "id": "rechtliches-header",
+                "title": "Rechtliches",
+                "position": 50,
+                "visible": true,
+                "is_header": true,
+                "submenu": []
+            },
+            {
+                "id": "impressum",
+                "title": "Impressum",
+                "position": 60,
+                "visible": true,
+                "submenu": []
+            },
+            {
+                "id": "datenschutz",
+                "title": "Datenschutz",
+                "position": 70,
+                "visible": true,
+                "submenu": []
+            },
+            {
+                "id": "agb",
+                "title": "AGB",
+                "position": 80,
+                "visible": true,
+                "submenu": []
+            }
+        ],
+        "settings": {
+            "show_hidden_pages": false,
+            "max_depth": 1,
+            "sort_by_position": true
+        }
+    }
+}

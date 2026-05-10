@@ -24,8 +24,40 @@ use function FastRoute\simpleDispatcher;   // Funktionsimport
 use FastRoute\Dispatcher;                  // Konstanten‑Import
 
 $dispatcher = simpleDispatcher(function (FastRoute\RouteCollector $r) {
+    // Admin-Routen (hohe Priorität)
+    $r->addRoute('GET', '/admin', 'App\Controllers\Admin\AdminController@dashboard');
+    $r->addRoute('GET', '/admin/pages', 'App\Controllers\Admin\AdminController@pages');
+    $r->addRoute('GET', '/admin/menu', 'App\Controllers\Admin\AdminController@menu');
+    $r->addRoute('GET', '/admin/files', 'App\Controllers\Admin\AdminController@files');
+    $r->addRoute('GET', '/admin/settings', 'App\Controllers\Admin\AdminController@settings');
+    
+    // Admin-Speicherfunktionen
+    $r->addRoute('POST', '/admin/menu/save/{menuType}', 'App\Controllers\Admin\AdminController@saveMenu');
+    $r->addRoute('POST', '/admin/settings/save', 'App\Controllers\Admin\AdminController@saveSettings');
+    $r->addRoute('POST', '/admin/pages/save/{pageId}', 'App\Controllers\Admin\AdminController@savePage');
+    
+    // Admin-Seitenverwaltung
+    $r->addRoute('GET', '/admin/pages/new', 'App\Controllers\Admin\AdminController@newPage');
+    $r->addRoute('GET', '/admin/pages/{pageId}/edit', 'App\Controllers\Admin\AdminController@editPage');
+    $r->addRoute('GET', '/admin/sidebars', 'App\Controllers\Admin\AdminController@editSidebars');
+    $r->addRoute('POST', '/admin/save-sidebars', 'App\Controllers\Admin\AdminController@saveSidebars');
+    $r->addRoute('GET', '/admin/pages/{pageId}/delete', 'App\Controllers\Admin\AdminController@deletePage');
+    
+    // Admin-Dateiverwaltungsfunktionen
+    $r->addRoute('POST', '/admin/files/upload', 'App\Controllers\Admin\AdminController@uploadFile');
+    $r->addRoute('POST', '/admin/files/create-folder', 'App\Controllers\Admin\AdminController@createFolder');
+    $r->addRoute('POST', '/admin/files/delete', 'App\Controllers\Admin\AdminController@deleteFile');
+    
     // Route für die Startseite
     $r->addRoute('GET', '/', 'App\Controllers\HomeController@index');
+    // Route für einzelne Seiten
+    $r->addRoute('GET', '/page/{id}', 'App\Controllers\HomeController@showPage');
+    
+    // API-Routen für HTMX
+    $r->addRoute('GET', '/api/navigation', 'App\Controllers\ApiController@navigation');
+    $r->addRoute('GET', '/api/events', 'App\Controllers\ApiController@events');
+    $r->addRoute('GET', '/api/content', 'App\Controllers\ApiController@content');
+    
     // weitere Routen können hier ergänzt werden …
 });
 
@@ -63,7 +95,16 @@ switch ($routeInfo[0]) {
         try {
             /** @var object $controller */
             $controller = $container->get($class);
-            $controller->$method(...array_values($vars));
+            $result = $controller->$method(...array_values($vars));
+            
+            // Wenn die Methode eine Antwort zurückgibt, diese ausgeben
+            if ($result !== null) {
+                // Setze den Content-Type-Header für JSON-Antworten
+                if (strpos($result, '{') === 0 || strpos($result, '[') === 0) {
+                    header('Content-Type: application/json');
+                }
+                echo $result;
+            }
         } catch (Throwable $e) {
             // Fehler beim Instantiieren/Ausführen des Controllers
             header('HTTP/1.1 500 Internal Server Error');
