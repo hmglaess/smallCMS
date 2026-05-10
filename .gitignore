@@ -1,4 +1,11 @@
 /vendor
 /composer.lock
+/node_modules
 config.json
 .php-cs-fixer.cache
+.php-cs-fixer.dist.php
+.biome.json
+debug*.*
+test*.*
+phpstan.neon
+
