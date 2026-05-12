@@ -151,45 +151,27 @@ class AdminService
                 }
             }
         }
-        
-        // Check if the incoming structure is flat (from JavaScript) or already has structure/settings
-        $isFlatStructure = true;
-        if (isset($menuStructure['structure']) || isset($menuStructure['settings'])) {
-            $isFlatStructure = false;
-        }
-        
-        // Convert flat structure to proper format if needed
-        if ($isFlatStructure) {
-            $convertedStructure = [];
-            foreach ($menuStructure as $item) {
-                $convertedStructure[] = [
-                    'id' => $item['page_id'] ?? ($item['id'] ?? ''),
-                    'title' => $item['title'] ?? '',
-                    'position' => $item['position'] ?? 0,
-                    'visible' => true,
-                    'submenu' => []
-                ];
-            }
-            
-            // Preserve existing settings or use defaults
-            $existingSettings = $config[$menuType]['settings'] ?? [];
-            $menuStructure = [
-                'structure' => $convertedStructure,
-                'settings' => array_merge([
-                    'show_hidden_pages' => false,
-                    'max_depth' => $menuType === 'main_menu' ? 2 : 1,
-                    'sort_by_position' => true
-                ], $existingSettings)
-            ];
-        }
-        
-        // Update the specific menu
-        $config[$menuType] = $menuStructure;
-        
-        // Save back to file
-        $jsonContent = json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        return file_put_contents($configFile, $jsonContent) !== false;
     }
+
+    /**
+     * Handle image upload
+     *
+     * @param array $file The uploaded file from $_FILES
+     * @return array Result of the upload operation
+     */
+    public function uploadImage(array $file): array
+    {
+        $uploadDir = __DIR__ . '/../../../public/assets/img/';
+        $uploadFile = $uploadDir . basename($file['name']);
+
+        if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
+            $imageUrl = '/assets/img/' . basename($file['name']);
+            return ['success' => true, 'url' => $imageUrl];
+        } else {
+            return ['success' => false, 'message' => 'Fehler beim Hochladen des Bildes.'];
+        }
+    }
+    
 
     /**
      * Save settings to config file
@@ -204,5 +186,4 @@ class AdminService
         $jsonContent = json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         return file_put_contents($configFile, $jsonContent) !== false;
     }
-
 }

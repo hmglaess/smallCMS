@@ -75,20 +75,20 @@ function toggleMenu() {
     const menu = document.getElementById('main-navigation');
     if (menu) {
         menu.classList.toggle('active');
-        
+
         // Hamburger animation
         const hamburger = document.querySelector('.hamburger');
         if (hamburger) {
             hamburger.classList.toggle('active');
         }
     }
-    
-    // Close menu when clicking outside
+
+    // Close menu when clicking outside or when a menu item is clicked
     document.addEventListener('click', function(event) {
         const menu = document.getElementById('main-navigation');
         const hamburger = document.querySelector('.hamburger');
-        
-        if (menu && hamburger && !menu.contains(event.target) && !hamburger.contains(event.target)) {
+
+        if (menu && hamburger && (!menu.contains(event.target) && !hamburger.contains(event.target) || event.target.tagName === 'A')) {
             menu.classList.remove('active');
             hamburger.classList.remove('active');
         }

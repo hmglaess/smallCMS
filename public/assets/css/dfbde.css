@@ -1,9 +1,15 @@
 /*Farbcodes*/
 :root {
---softpurple: #B19CD9;
---deepviolet: #8A2BE2;
---warmyellow: #FFD700;
---darkblue: #00008B;
+  --softpurple: #B19CD9;
+  --deepviolet: #8A2BE2;
+  --warmyellow: #FFD700;
+  --darkblue: #00008B;
+}
+
+/* Responsive Images */
+img {
+    max-width: 100%;
+    height: auto;
 }
 /* Extracted styles from home.php and page.php */
 code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
@@ -536,6 +542,64 @@ footer {
   border-bottom: 2px solid #D946EF;
   list-style: none;
   font-size: 1.1rem;
+}
+
+/* Footer Navigation Menu */
+.footer-menu {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.footer-menu a {
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.footer-menu a:hover {
+  background: rgba(217, 70, 239, 0.2);
+  transform: translateY(-2px);
+  color: #06B6D4;
+}
+
+/* Footer Navigation for Mobile */
+@media (max-width: 767px) {
+  .footer-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(26, 26, 46, 0.98);
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  .footer-menu.active {
+    display: flex;
+  }
+
+  .footer-menu li {
+    width: 100%;
+    text-align: center;
+    margin: 0.5rem 0;
+  }
+
+  .footer-menu a {
+    display: block;
+    padding: 0.75rem 1rem;
+  }
+
+  .footer-hamburger {
+    display: flex;
+  }
 }
 
 /* Hero Section */

@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Fehler: Der Quill-Editor konnte nicht geladen werden. Bitte laden Sie die Seite neu.');
         return;
     }
-    
+
     // Initialize Quill editor
     try {
         quillEditor = new Quill('#editor-container', {
@@ -65,22 +65,75 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             placeholder: 'Geben Sie den Seiteninhalt ein...',
         });
-        
+
         console.log('Quill editor initialized successfully');
-        
+
         // Set initial content from the hidden textarea
         const initialContent = document.getElementById('page-content').value;
         if (initialContent) {
-            quillEditor.root.innerHTML = initialContent;
+            quillEditor.clipboard.dangerouslyPasteHTML(initialContent);
         }
-        
+
         // Update hidden textarea when editor content changes
         quillEditor.on('text-change', function() {
             const htmlContent = quillEditor.root.innerHTML;
             document.getElementById('page-content').value = htmlContent;
             console.log('Editor content updated, length:', htmlContent.length);
         });
-        
+
+        // Custom image handler
+        const toolbar = quillEditor.getModule('toolbar');
+        toolbar.addHandler('image', function() {
+            const range = quillEditor.getSelection();
+            
+            // Fetch existing images from the server
+            fetch('/admin/get-images')
+                .then(response => response.json())
+                .then(images => {
+                    if (images.length === 0) {
+                        alert('Keine Bilder gefunden.');
+                        return;
+                    }
+                    
+                    // Create a modal to display the images
+                    const modal = document.createElement('div');
+                    modal.style.position = 'fixed';
+                    modal.style.top = '50%';
+                    modal.style.left = '50%';
+                    modal.style.transform = 'translate(-50%, -50%)';
+                    modal.style.background = 'white';
+                    modal.style.padding = '20px';
+                    modal.style.boxShadow = '0 0 10px rgba(0,0,0,0.1)';
+                    modal.style.zIndex = '1000';
+                    
+                    const closeButton = document.createElement('button');
+                    closeButton.innerText = 'Schließen';
+                    closeButton.onclick = function() {
+                        document.body.removeChild(modal);
+                    };
+                    modal.appendChild(closeButton);
+                    
+                    // Display the images
+                    images.forEach(image => {
+                        const imgElement = document.createElement('img');
+                        imgElement.src = image.url;
+                        imgElement.style.width = '100px';
+                        imgElement.style.margin = '10px';
+                        imgElement.onclick = function() {
+                            quillEditor.insertEmbed(range.index, 'image', image.url, Quill.sources.USER);
+                            document.body.removeChild(modal);
+                        };
+                        modal.appendChild(imgElement);
+                    });
+                    
+                    document.body.appendChild(modal);
+                })
+                .catch(error => {
+                    console.error('Error fetching images:', error);
+                    alert('Fehler beim Laden der Bilder.');
+                });
+        });
+
     } catch (error) {
         console.error('Failed to initialize Quill editor:', error);
         alert('Fehler beim Initialisieren des Editors: ' + error.message);

@@ -8,4 +8,5 @@ config.json
 debug*.*
 test*.*
 phpstan.neon
+AGENTS.md
 
